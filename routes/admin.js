@@ -4,6 +4,9 @@ const router = express.Router();
 const path = require('path');
 const rootDir = require('../util/path');
 
+//This array of data is stored in the node server context and not in the user context so this is shared across requests across browsers by different users.
+const products = [];
+
 //router.use will behave same as app.use
 //router.get router.post and all other methods work same as app.get app.post i.e it will do exact path match
 
@@ -18,13 +21,16 @@ router.get('/add-product',(req,res,next) => {
     // to resolve this we use the core path library __dirname will give the current path
     // since __dirname is current file directory, we need to form the path from the current file
     //res.sendFile(path.join(__dirname, '../', 'views', 'add-product.html'));
-    res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
+    //res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
+    res.render('add-product', {pageTitle: 'Add Product'});
 });
 
 //Add product post method => /admin/add-product - POST
 router.post('/add-product',(req,res,next) => {
     console.log(req.body);
+    products.push({title: req.body.title});
     res.redirect('/');
 });
 
-module.exports = router;
+module.exports.routes = router;
+module.exports.products = products;
